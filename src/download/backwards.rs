@@ -82,7 +82,7 @@ async fn download_backwards(
 
         let mut lower_bound = 0;
 
-        for x in OffsetRange::new(10, new_seed) {
+        for x in OffsetRange::new(17, new_seed) {
             let t = latest_t - x;
             if t < lower_bound {
                 continue;
