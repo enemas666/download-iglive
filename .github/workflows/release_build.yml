@@ -15,12 +15,13 @@ jobs:
 
       - name: Install Rust
         run: |
+          set -x  # Enable debug logging to see the commands being run
           # Install rustup
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
           source $HOME/.cargo/env
           rustup update
           rustup default stable
-          rustup target add x86_64-apple-darwin
+          rustup target add x86_64-apple-darwin -y  # Automatically accept the target addition
 
       - name: Compile and release
         uses: rust-build/rust-build.action@v1.3.2
