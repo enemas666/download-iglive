@@ -21,16 +21,36 @@ jobs:
           source $HOME/.cargo/env
           rustup update
           rustup default stable
-          rustup target add x86_64-apple-darwin  # Removed the '-y' flag
+          rustup target add x86_64-apple-darwin
 
-      - name: Compile and release
-        uses: rust-build/rust-build.action@v1.3.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build for Linux and Windows
+        if: matrix.target != 'x86_64-apple-darwin'
+        run: |
+          cargo build --target ${{ matrix.target }}
+          # Optionally, you can also test if needed
+          # cargo test --target ${{ matrix.target }}
+
+      - name: Build for macOS
+        if: matrix.target == 'x86_64-apple-darwin'
+        run: |
+          # macOS-specific build steps here (using cargo)
+          cargo build --target x86_64-apple-darwin
+          # You can also run tests if needed
+          # cargo test --target x86_64-apple-darwin
+
+      - name: Release and upload for Linux and Windows
+        if: matrix.target != 'x86_64-apple-darwin'
+        uses: actions/upload-artifact@v3
         with:
-          TOOLCHAIN_VERSION: stable
-          RUSTTARGET: ${{ matrix.target }}
-          EXTRA_FILES: "README.md LICENSE"
+          name: release-artifact-${{ matrix.target }}
+          path: target/${{ matrix.target }}/release/*
+
+      - name: Release and upload for macOS
+        if: matrix.target == 'x86_64-apple-darwin'
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-artifact-${{ matrix.target }}
+          path: target/x86_64-apple-darwin/release/*
 
     # Conditional runner for macOS and Ubuntu based on the target
     runs-on: ${{ matrix.target == 'x86_64-apple-darwin' && 'macos-latest' || 'ubuntu-latest' }}
