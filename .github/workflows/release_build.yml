@@ -21,7 +21,7 @@ jobs:
           source $HOME/.cargo/env
           rustup update
           rustup default stable
-          rustup target add x86_64-apple-darwin -y  # Automatically accept the target addition
+          rustup target add x86_64-apple-darwin  # Removed the '-y' flag
 
       - name: Compile and release
         uses: rust-build/rust-build.action@v1.3.2
