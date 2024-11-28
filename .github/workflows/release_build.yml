@@ -35,6 +35,9 @@ jobs:
         run: |
           # macOS-specific build steps here (using cargo)
           cargo build --target x86_64-apple-darwin
+          # List the build artifacts to debug the path
+          echo "Listing contents of the target directory:"
+          ls -R target/x86_64-apple-darwin
           # You can also run tests if needed
           # cargo test --target x86_64-apple-darwin
 
