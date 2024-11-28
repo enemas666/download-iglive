@@ -13,15 +13,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Rust toolchain
-        uses: actions/setup-rust@v1
-        with:
-          toolchain: stable
-          components: rustfmt, clippy
-
-      - name: Add macOS target for Rust
-        run: rustup target add x86_64-apple-darwin
-        if: matrix.target == 'x86_64-apple-darwin'
+      - name: Install Rust
+        run: |
+          # Install rustup
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+          source $HOME/.cargo/env
+          rustup update
+          rustup default stable
+          rustup target add x86_64-apple-darwin
 
       - name: Compile and release
         uses: rust-build/rust-build.action@v1.3.2
@@ -31,6 +30,6 @@ jobs:
           TOOLCHAIN_VERSION: stable
           RUSTTARGET: ${{ matrix.target }}
           EXTRA_FILES: "README.md LICENSE"
-          
+
     # Conditional runner for macOS and Ubuntu based on the target
     runs-on: ${{ matrix.target == 'x86_64-apple-darwin' && 'macos-latest' || 'ubuntu-latest' }}
