@@ -1,0 +1,45 @@
+name: Cross-compile to macOS
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    # Step 1: Checkout the code
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    # Step 2: Set up Rust
+    - name: Set up Rust
+      uses: actions/setup-rust@v1
+      with:
+        rust-version: 1.67  # You can adjust the Rust version if needed
+
+    # Step 3: Add macOS target (for x86_64 architecture)
+    - name: Add macOS target
+      run: rustup target add x86_64-apple-darwin
+
+    # Step 4: Install Clang and build tools needed for macOS
+    - name: Install Clang and dependencies
+      run: |
+        choco install llvm
+        choco install mingw
+
+    # Step 5: Build the project for macOS
+    - name: Build for macOS
+      run: cargo build --release --target x86_64-apple-darwin
+
+    # Step 6: Upload the resulting binary
+    - name: Upload macOS binary
+      uses: actions/upload-artifact@v2
+      with:
+        name: macos-binary
+        path: target/x86_64-apple-darwin/release/your_binary_name
