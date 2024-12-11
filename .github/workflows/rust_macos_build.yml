@@ -5,21 +5,18 @@ on:
     types:
       - published
 
-
 jobs:
   build:
     runs-on: windows-latest
-    
+
     steps:
     # Step 1: Checkout the code
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3  # Updated to v3
 
-    # Step 2: Set up Rust
+    # Step 2: Set up Rust (use rust-lang/setup-rust)
     - name: Set up Rust
-      uses: actions/setup-rust@v1
-      with:
-        rust-version: 1.67  # You can adjust the Rust version if needed
+      uses: rust-lang/setup-rust@v1  # Updated to the latest stable setup
 
     # Step 3: Add macOS target (for x86_64 architecture)
     - name: Add macOS target
@@ -35,9 +32,9 @@ jobs:
     - name: Build for macOS
       run: cargo build --release --target x86_64-apple-darwin
 
-    # Step 6: Upload the resulting binary
+    # Step 6: Upload the resulting binary (using the latest version of upload-artifact)
     - name: Upload macOS binary
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3  # Updated to v3
       with:
         name: macos-binary
-        path: target/x86_64-apple-darwin/release/your_binary_name
+        path: target/x86_64-apple-darwin/release/your_binary_name  # Replace with your actual binary name
