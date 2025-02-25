@@ -66,6 +66,7 @@ pub async fn merge(dir: impl AsRef<Path>) -> Result<()> {
     let output = process::Command::new("ffmpeg")
         .args([OsStr::new("-i"), video_concat.as_os_str()])
         .args([OsStr::new("-i"), audio_concat.as_os_str()])
+        .args(["-fflags", "+genpts"])
         .args(["-c", "copy"])
         .args(["-movflags", "+faststart"])
         .arg("-y")
